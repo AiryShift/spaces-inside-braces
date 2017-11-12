@@ -35,7 +35,7 @@ class BraceSpacer {
         // one chrarcter after cursor
         const textAfter = editor.document.getText(new vscode.Range(positionAfterStart, positionAfterEnd));
 
-        return textBefore === `${open} ` && textAfter === `${close}`;
+        return textBefore === `${open} ` && textAfter === close;
     }
 
     public space() {
@@ -75,7 +75,7 @@ class BraceSpacer {
         // two characters after cursor
         const textAfter = editor.document.getText(new vscode.Range(positionAfterStart, positionAfterEnd));
 
-        return textBefore == `${open}` && textAfter == ` ${close}`;
+        return textBefore === open && textAfter === ` ${close}`;
     }
 
     public unspace() {
@@ -114,7 +114,7 @@ class BraceSpacerController {
         let subscriptions: vscode.Disposable[] = [];
         vscode.workspace.onDidChangeTextDocument(this._onDidChangeTextDocument, this, subscriptions);
         vscode.workspace.onDidChangeConfiguration(this._onDidChangeConfiguration, this, subscriptions);
-        this._config = vscode.workspace.getConfiguration();
+        this._config = vscode.workspace.getConfiguration("spaces-inside-braces");
 
         this._disposable = vscode.Disposable.from(...subscriptions);
     }
@@ -123,17 +123,29 @@ class BraceSpacerController {
         this._disposable.dispose();
     }
 
+    private _considerSpacingFor(open: string, close: string) {
+        if (this._braceSpacer.shouldSpace(open, close)) {
+            this._braceSpacer.space();
+        } else if (this._braceSpacer.shouldUnspace(open, close)) {
+            this._braceSpacer.unspace();
+        }
+    }
+
     private _onDidChangeTextDocument() {
-        if (this._config.get("spaces-inside-braces.enable", true)) {
-            if (this._braceSpacer.shouldSpace("{", "}")) {
-                this._braceSpacer.space();
-            } else if (this._braceSpacer.shouldUnspace("{", "}")) {
-                this._braceSpacer.unspace();
+        if (this._config.get("enable", true)) {
+            if (this._config.get("enableForBraces", true)) {
+                this._considerSpacingFor("{", "}");
+            }
+            if (this._config.get("enableForParens", true)) {
+                this._considerSpacingFor("(", ")");
+            }
+            if (this._config.get("enableForBrackets"), true) {
+                this._considerSpacingFor("[", "]");
             }
         }
     }
 
     private _onDidChangeConfiguration() {
-        this._config = vscode.workspace.getConfiguration();
+        this._config = vscode.workspace.getConfiguration("spaces-inside-braces");
     }
 }
