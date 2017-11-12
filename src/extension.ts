@@ -63,21 +63,29 @@ class BraceSpacerController {
 
     private _braceSpacer: BraceSpacer;
     private _disposable: vscode.Disposable;
+    private _config: vscode.WorkspaceConfiguration;
 
     constructor(braceSpacer: BraceSpacer) {
         this._braceSpacer = braceSpacer;
 
         let subscriptions: vscode.Disposable[] = [];
-        vscode.workspace.onDidChangeTextDocument(this._onEvent, this, subscriptions);
+        vscode.workspace.onDidChangeTextDocument(this._onDidChangeTextDocument, this, subscriptions);
+        vscode.workspace.onDidChangeConfiguration(this._onDidChangeConfiguration, this, subscriptions);
 
-        this._disposable = vscode.Disposable.from(...subscriptions)
+        this._disposable = vscode.Disposable.from(...subscriptions);
     }
 
     dispose() {
-        this._disposable.dispose()
+        this._disposable.dispose();
     }
 
-    private _onEvent() {
-        this._braceSpacer.spaceBraces()
+    private _onDidChangeTextDocument() {
+        if (this._config.get("spaces-inside-braces.enable", true)) {
+            this._braceSpacer.spaceBraces();
+        }
+    }
+
+    private _onDidChangeConfiguration() {
+        this._config = vscode.workspace.getConfiguration();
     }
 }

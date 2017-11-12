@@ -14,6 +14,19 @@
     "activationEvents": [
         "*"
     ],
+    "contributes": {
+        "configuration": {
+            "type": "object",
+            "title": "spaces-inside-braces configuration",
+            "properties": {
+                "spaces-inside-braces.enable": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables space insertion"
+                }
+            }
+        }
+    },
     "scripts": {
         "vscode:prepublish": "npm run compile",
         "compile": "tsc -p ./",
