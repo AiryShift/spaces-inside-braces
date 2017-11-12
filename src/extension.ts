@@ -88,7 +88,7 @@ class BraceSpacer {
 
         // remove the extra space
         editor.edit(function (edit) {
-            edit.replace(new vscode.Range(position.line, position.character - 1, position.line, position.character + 1), "}");
+            edit.replace(new vscode.Range(position.line, position.character - 1, position.line, position.character), "");
         }, {undoStopBefore: false, undoStopAfter: false});
 
         // move the cursor to the center
