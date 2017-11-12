@@ -17,7 +17,7 @@ export function deactivate() {
 
 class BraceSpacer {
 
-    public shouldSpace(): boolean {
+    public shouldSpace(open: string, close: string): boolean {
         const editor = vscode.window.activeTextEditor;
         if (!editor || !editor.selection.isEmpty) {
             return;
@@ -35,10 +35,10 @@ class BraceSpacer {
         // one chrarcter after cursor
         const textAfter = editor.document.getText(new vscode.Range(positionAfterStart, positionAfterEnd));
 
-        return textBefore === "{ " && textAfter === "}";
+        return textBefore === `${open} ` && textAfter === `${close}`;
     }
 
-    public spaceBraces() {
+    public space() {
         const editor = vscode.window.activeTextEditor;
         if (!editor || !editor.selection.isEmpty) {
             return;
@@ -57,7 +57,7 @@ class BraceSpacer {
         editor.selection = newSelection;
     }
 
-    public shouldUnspace(): boolean {
+    public shouldUnspace(open: string, close: string): boolean {
         const editor = vscode.window.activeTextEditor;
         if (!editor || !editor.selection.isEmpty) {
             return;
@@ -75,10 +75,10 @@ class BraceSpacer {
         // two characters after cursor
         const textAfter = editor.document.getText(new vscode.Range(positionAfterStart, positionAfterEnd));
 
-        return textBefore == "{" && textAfter == " }";
+        return textBefore == `${open}` && textAfter == ` ${close}`;
     }
 
-    public unspaceBraces() {
+    public unspace() {
         const editor = vscode.window.activeTextEditor;
         if (!editor || !editor.selection.isEmpty) {
             return;
@@ -125,10 +125,10 @@ class BraceSpacerController {
 
     private _onDidChangeTextDocument() {
         if (this._config.get("spaces-inside-braces.enable", true)) {
-            if (this._braceSpacer.shouldSpace()) {
-                this._braceSpacer.spaceBraces();
-            } else if (this._braceSpacer.shouldUnspace()) {
-                this._braceSpacer.unspaceBraces();
+            if (this._braceSpacer.shouldSpace("{", "}")) {
+                this._braceSpacer.space();
+            } else if (this._braceSpacer.shouldUnspace("{", "}")) {
+                this._braceSpacer.unspace();
             }
         }
     }
