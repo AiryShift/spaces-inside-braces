@@ -47,10 +47,9 @@ class BraceSpacer {
         const position = editor.selection.active;
 
         // add the space
-        const workspaceEdit = new vscode.WorkspaceEdit();
-        const edit = new vscode.TextEdit(new vscode.Range(position.line, position.character + 1, position.line, position.character + 1), " ");
-        workspaceEdit.set(editor.document.uri, [edit]);
-        vscode.workspace.applyEdit(workspaceEdit);
+        editor.edit(function (edit) {
+            edit.replace(new vscode.Range(position.line, position.character + 1, position.line, position.character + 1), " ");
+        }, {undoStopBefore: false, undoStopAfter: false});
 
         // move the cursor to the center
         const newPosition = new vscode.Position(position.line, position.character + 1);
@@ -88,10 +87,9 @@ class BraceSpacer {
         const position = editor.selection.active;
 
         // remove the extra space
-        const workspaceEdit = new vscode.WorkspaceEdit();
-        const edit = new vscode.TextEdit(new vscode.Range(position.line, position.character - 1, position.line, position.character + 1), "}");
-        workspaceEdit.set(editor.document.uri, [edit]);
-        vscode.workspace.applyEdit(workspaceEdit);
+        editor.edit(function (edit) {
+            edit.replace(new vscode.Range(position.line, position.character - 1, position.line, position.character + 1), "}");
+        }, {undoStopBefore: false, undoStopAfter: false});
 
         // move the cursor to the center
         const newPosition = new vscode.Position(position.line, position.character - 1);
