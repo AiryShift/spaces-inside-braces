@@ -2,7 +2,7 @@
     "name": "spaces-inside-braces",
     "displayName": "Spaces Inside Braces",
     "description": "Adds appropriate spacing inside braces",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "publisher": "AiryShift",
     "engines": {
         "vscode": "^1.17.0"
