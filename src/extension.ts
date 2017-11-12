@@ -5,17 +5,17 @@ export function activate(context: vscode.ExtensionContext) {
 
     console.log('extension "spaces-inside-braces" is now active');
 
-    let braceSpacer = new BraceSpacer();
-    let controller = new BraceSpacerController(braceSpacer);
+    let spacer = new Spacer();
+    let controller = new SpacerController(spacer);
 
     context.subscriptions.push(controller);
-    context.subscriptions.push(braceSpacer);
+    context.subscriptions.push(spacer);
 }
 
 export function deactivate() {
 }
 
-class BraceSpacer {
+class Spacer {
 
     public shouldSpace(open: string, close: string): boolean {
         const editor = vscode.window.activeTextEditor;
@@ -102,14 +102,14 @@ class BraceSpacer {
     }
 }
 
-class BraceSpacerController {
+class SpacerController {
 
-    private _braceSpacer: BraceSpacer;
+    private _spacer: Spacer;
     private _disposable: vscode.Disposable;
     private _config: vscode.WorkspaceConfiguration;
 
-    constructor(braceSpacer: BraceSpacer) {
-        this._braceSpacer = braceSpacer;
+    constructor(spacer: Spacer) {
+        this._spacer = spacer;
 
         let subscriptions: vscode.Disposable[] = [];
         vscode.workspace.onDidChangeTextDocument(this._onDidChangeTextDocument, this, subscriptions);
@@ -124,10 +124,10 @@ class BraceSpacerController {
     }
 
     private _considerSpacingFor(open: string, close: string) {
-        if (this._braceSpacer.shouldSpace(open, close)) {
-            this._braceSpacer.space();
-        } else if (this._braceSpacer.shouldUnspace(open, close)) {
-            this._braceSpacer.unspace();
+        if (this._spacer.shouldSpace(open, close)) {
+            this._spacer.space();
+        } else if (this._spacer.shouldUnspace(open, close)) {
+            this._spacer.unspace();
         }
     }
 
