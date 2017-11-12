@@ -71,6 +71,7 @@ class BraceSpacerController {
         let subscriptions: vscode.Disposable[] = [];
         vscode.workspace.onDidChangeTextDocument(this._onDidChangeTextDocument, this, subscriptions);
         vscode.workspace.onDidChangeConfiguration(this._onDidChangeConfiguration, this, subscriptions);
+        this._config = vscode.workspace.getConfiguration();
 
         this._disposable = vscode.Disposable.from(...subscriptions);
     }
