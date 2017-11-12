@@ -1,10 +1,6 @@
 'use strict';
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
     console.log('extension "spaces-inside-braces" is now active');
@@ -16,7 +12,6 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(braceSpacer);
 }
 
-// this method is called when your extension is deactivated
 export function deactivate() {
 }
 
@@ -35,9 +30,9 @@ class BraceSpacer {
         const positionAfterStart = new vscode.Position(position.line, position.character + 1);
         const positionAfterEnd = new vscode.Position(position.line, position.character + 2);
 
-        // two characters before the cursor's position after inserting the new character
+        // two characters before cursor
         const textBefore = editor.document.getText(new vscode.Range(positionBeforeStart, positionBeforeEnd));
-        // one chrarcter after the cursor's position after inserting the new character
+        // one chrarcter after cursor
         const textAfter = editor.document.getText(new vscode.Range(positionAfterStart, positionAfterEnd));
 
         return textBefore === "{ " && textAfter === "}";
@@ -53,7 +48,7 @@ class BraceSpacer {
 
         // add the space
         const workspaceEdit = new vscode.WorkspaceEdit();
-        const edit = new vscode.TextEdit(new vscode.Range(position.line, position.character + 1, position.line, position.character + 2), " }");
+        const edit = new vscode.TextEdit(new vscode.Range(position.line, position.character + 1, position.line, position.character + 1), " ");
         workspaceEdit.set(editor.document.uri, [edit]);
         vscode.workspace.applyEdit(workspaceEdit);
 
@@ -76,7 +71,9 @@ class BraceSpacer {
         const positionAfterStart = new vscode.Position(position.line, position.character - 1);
         const positionAfterEnd = new vscode.Position(position.line, position.character + 1);
 
+        // one character before cursor
         const textBefore = editor.document.getText(new vscode.Range(positionBeforeStart, positionBeforeEnd));
+        // two characters after cursor
         const textAfter = editor.document.getText(new vscode.Range(positionAfterStart, positionAfterEnd));
 
         return textBefore == "{" && textAfter == " }";
