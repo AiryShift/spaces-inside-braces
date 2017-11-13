@@ -2,7 +2,7 @@
     "name": "spaces-inside-braces",
     "displayName": "Spaces Inside Braces",
     "description": "Adds appropriate spacing inside braces",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "publisher": "AiryShift",
     "engines": {
         "vscode": "^1.17.0"
@@ -22,7 +22,22 @@
                 "spaces-inside-braces.enable": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Enables space insertion"
+                    "description": "Enables space insertion in general. Overrides all other settings."
+                },
+                "spaces-inside-braces.enableForBraces": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables space insertion for braces: {}"
+                },
+                "spaces-inside-braces.enableForParens": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables space insertion for parentheses: ()"
+                },
+                "spaces-inside-braces.enableForBrackets": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables space insertion for brackets: []"
                 }
             }
         }
