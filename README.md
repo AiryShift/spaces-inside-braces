@@ -4,31 +4,27 @@ Reformats braces (and others) as you type.
 
 ## Features
 
-Spaces braces `{}`, parentheses `()`, and brackets `[]` as you type.
+Spaces braces `{}`, parentheses `()`, brackets `[]`, and angle brackets `<>` as you type.
 
 When `{` is typed to create a pair of curly braces, the following appears with the cursor in between the two braces.
 
     {|}
-     ^
-    cursor
+     ^cursor
 
 Pressing space once by default gives the following:
 
     { |}
-      ^
-    cursor
+      ^cursor
 
 By installing this extension, it autoformats to:
 
     { | }
-      ^
-    cursor
+      ^cursor
 
 Removing the space returns the braces to the original state:
 
     {|}
-     ^
-    cursor
+     ^cursor
 
 ## Configuration
 
