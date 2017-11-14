@@ -2,7 +2,7 @@
     "name": "spaces-inside-braces",
     "displayName": "Spaces Inside Braces",
     "description": "Adds appropriate spacing inside braces",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "publisher": "AiryShift",
     "engines": {
         "vscode": "^1.17.0"
@@ -38,6 +38,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Enables space insertion for brackets: []"
+                },
+                "spaces-inside-braces.enableForAngle": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables space insertion for angle brackets: <>"
                 }
             }
         }
@@ -62,5 +67,6 @@
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/AiryShift/spaces-inside-braces/issues"
-    }
+    },
+    "icon": "images/icon.png"
 }

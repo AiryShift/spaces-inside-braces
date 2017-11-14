@@ -5,8 +5,13 @@ All notable changes to the "spaces-inside-braces" extension will be documented i
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 ## [Unreleased]
-- Spacing for angle brackets `<>` maybe?
-- Spacing for arbitrary opening and closing guards
+- Spacing for arbitrary opening and closing guards.
+
+## [0.3.0] - 2017-11-14
+### Added
+- Icon for VS Marketplace.
+- Spacing for `<>`.
+- Configuration option for spacing of `<>`.
 
 ## [0.2.0] - 2017-11-13
 ### Added
