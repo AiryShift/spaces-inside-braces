@@ -32,6 +32,7 @@ Removing the space returns the braces to the original state:
 - `spaces-inside-braces.enableForBraces`: enable/disable spacing for braces.
 - `spaces-inside-braces.enableForParens`: enable/disable spacing for parentheses.
 - `spaces-inside-braces.enableForBrackets`: enable/disable spacing for brackets.
+- `spaces-inside-braces.enableForAngle`: enable/disable spacing for angle brackets.
 
 ## Icon
 

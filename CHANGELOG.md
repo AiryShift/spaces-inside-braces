@@ -7,6 +7,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [Unreleased]
 - Spacing for arbitrary opening and closing guards.
 
+## [0.3.1] - 2017-11-15
+### Fixed
+- Documentation in README
+
 ## [0.3.0] - 2017-11-14
 ### Added
 - Icon for VS Marketplace.
