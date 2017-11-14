@@ -38,6 +38,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Enables space insertion for brackets: []"
+                },
+                "spaces-inside-braces.enableForAngle": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enables space insertion for angle brackets: <>"
                 }
             }
         }

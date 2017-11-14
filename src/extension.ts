@@ -128,6 +128,9 @@ class SpacerController {
             if (this._config.get("enableForBrackets", true)) {
                 this._considerSpacingFor("[", "]", line);
             }
+            if (this._config.get("enableForAngle", true)) {
+                this._considerSpacingFor("<", ">", line);
+            }
         }
     }
 
