@@ -62,5 +62,6 @@
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/AiryShift/spaces-inside-braces/issues"
-    }
+    },
+    "icon": "images/icon.png"
 }
