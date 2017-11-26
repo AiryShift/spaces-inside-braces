@@ -1,5 +1,9 @@
 # Spaces Inside Braces
 
+[![](https://vsmarketplacebadge.apphb.com/version/AiryShift.spaces-inside-braces.svg)](https://marketplace.visualstudio.com/items?itemName=AiryShift.spaces-inside-braces)
+[![](https://vsmarketplacebadge.apphb.com/installs-short/AiryShift.spaces-inside-braces.svg)](https://marketplace.visualstudio.com/items?itemName=AiryShift.spaces-inside-braces)
+[![](https://vsmarketplacebadge.apphb.com/rating-short/AiryShift.spaces-inside-braces.svg)](https://marketplace.visualstudio.com/items?itemName=AiryShift.spaces-inside-braces)
+
 Reformats braces (and others) as you type.
 
 ## Features
