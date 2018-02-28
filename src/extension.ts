@@ -15,19 +15,32 @@ export function activate(context: vscode.ExtensionContext) {
 
 export function deactivate() {}
 
+// don't use this for large a and b
+function zip(a: any[], b: any[]) {
+    let result = [];
+    for (let i = 0; i < Math.min(a.length, b.length); i++) {
+        result.push([a[i], b[i]]);
+    }
+    return result;
+}
 
 class Spacer {
 
-    public shouldSpace(open: string, close: string, position: vscode.Position): boolean {
+    public shouldSpace(openers: String[], closers: String[], position: vscode.Position): boolean {
         const line = vscode.window.activeTextEditor.document.lineAt(position.line).text;
         // two characters before cursor
         const textBefore = line.slice(Math.max(position.character - 1, 0), position.character + 1);
         // one chrarcter after cursor
         const textAfter = line.slice(position.character + 1, position.character + 2);
-        return textBefore === `${open} ` && textAfter === close;
+        for (let [open, close] of zip(openers, closers)) {
+            if (textBefore === `${open} ` && textAfter === close) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public space(open: string, close: string) {
+    public space() {
         const editor = vscode.window.activeTextEditor;
         editor.edit(edit => {
             editor.selections.forEach(selection => {
@@ -45,16 +58,21 @@ class Spacer {
         });
     }
 
-    public shouldUnspace(open: string, close: string, position: vscode.Position): boolean {
+    public shouldUnspace(openers: String[], closers: String[], position: vscode.Position): boolean {
         const line = vscode.window.activeTextEditor.document.lineAt(position.line).text;
         // one character before cursor
         const textBefore = line.slice(Math.max(position.character - 2, 0), Math.max(position.character - 1, 0));
         // two characters after cursor
         const textAfter = line.slice(Math.max(position.character - 1, 0), position.character + 1);
-        return textBefore === open && textAfter === ` ${close}`;
+        for (let [open, close] of zip(openers, closers)) {
+            if (textBefore === open && textAfter === ` ${close}`) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public unspace(open: string, close: string) {
+    public unspace() {
         const editor = vscode.window.activeTextEditor;
         // remove the extra space
         editor.edit(edit => {
@@ -81,6 +99,8 @@ class SpacerController {
     private _spacer: Spacer;
     private _disposable: vscode.Disposable;
     private _config: vscode.WorkspaceConfiguration;
+    private _openers: String[];
+    private _closers: String[];
 
     constructor(spacer: Spacer) {
         this._spacer = spacer;
@@ -97,38 +117,40 @@ class SpacerController {
         this._disposable.dispose();
     }
 
-    private _considerSpacingFor(open: string, close: string) {
+    private _considerSpacing() {
         const editor = vscode.window.activeTextEditor;
-        if (editor.selections.every(selection => { return this._spacer.shouldSpace(open, close, selection.active); })) {
-            this._spacer.space(open, close);
-        } else if (editor.selections.every(selection => { return this._spacer.shouldUnspace(open, close, selection.active); })) {
-            this._spacer.unspace(open, close);
+        if (editor.selections.every(selection => { return this._spacer.shouldSpace(this._openers, this._closers, selection.active); })) {
+            this._spacer.space();
+        } else if (editor.selections.every(selection => { return this._spacer.shouldUnspace(this._openers, this._closers, selection.active); })) {
+            this._spacer.unspace();
         }
     }
 
     private _onDidChangeTextDocument() {
-        if (this._config.get("enable", true)) {
-            const editor = vscode.window.activeTextEditor;
-            if (!editor) {
-                return;
-            }
-
-            if (this._config.get("enableForBraces", true)) {
-                this._considerSpacingFor("{", "}");
-            }
-            if (this._config.get("enableForParens", true)) {
-                this._considerSpacingFor("(", ")");
-            }
-            if (this._config.get("enableForBrackets", true)) {
-                this._considerSpacingFor("[", "]");
-            }
-            if (this._config.get("enableForAngle", true)) {
-                this._considerSpacingFor("<", ">");
-            }
+        if (this._config.get("enable", true) && vscode.window.activeTextEditor) {
+            this._considerSpacing();
         }
     }
 
     private _onDidChangeConfiguration() {
         this._config = vscode.workspace.getConfiguration("spaces-inside-braces");
+        this._openers = [];
+        this._closers = [];
+        if (this._config.get("enableForBraces", true)) {
+            this._openers.push("{");
+            this._closers.push("}");
+        }
+        if (this._config.get("enableForParens", true)) {
+            this._openers.push("(");
+            this._closers.push(")");
+        }
+        if (this._config.get("enableForBrackets", true)) {
+            this._openers.push("[");
+            this._closers.push("]");
+        }
+        if (this._config.get("enableForAngle", true)) {
+            this._openers.push("<");
+            this._closers.push(">");
+        }
     }
 }
