@@ -30,13 +30,29 @@ Removing the space returns the braces to the original state:
     {|}
      ^cursor
 
+The extension works with multiple cursors, however all cursors must either be in a position to space or unspace. Otherwise, normal behaviour will be preserved.
+
 ## Configuration
+
+All options are by default enabled.
 
 - `spaces-inside-braces.enable`: enable/disable the extension.
 - `spaces-inside-braces.enableForBraces`: enable/disable spacing for braces.
 - `spaces-inside-braces.enableForParens`: enable/disable spacing for parentheses.
 - `spaces-inside-braces.enableForBrackets`: enable/disable spacing for brackets.
 - `spaces-inside-braces.enableForAngle`: enable/disable spacing for angle brackets.
+
+## Known Behaviour
+
+Pressing delete in the following configuration results in the cursor getting reset.
+
+    {|  }
+     ^cursor
+
+to
+
+    { | }
+      ^cursor
 
 ## Icon
 
