@@ -88,7 +88,7 @@ class SpacerController {
         let subscriptions: vscode.Disposable[] = [];
         vscode.workspace.onDidChangeTextDocument(this._onDidChangeTextDocument, this, subscriptions);
         vscode.workspace.onDidChangeConfiguration(this._onDidChangeConfiguration, this, subscriptions);
-        this._config = vscode.workspace.getConfiguration("spaces-inside-braces");
+        this._onDidChangeConfiguration();
 
         this._disposable = vscode.Disposable.from(...subscriptions);
     }
