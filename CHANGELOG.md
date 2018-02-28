@@ -2,10 +2,15 @@
 
 All notable changes to the "spaces-inside-braces" extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
 ## [Unreleased]
 - Spacing for arbitrary opening and closing guards.
+
+## [0.4.0] - 2018-02-28
+### Added
+- Support for multiple cursors.
+- Badges on README
+### Fixed
+- Incorrect behaviour with multiple cursors. (#3)
 
 ## [0.3.1] - 2017-11-15
 ### Fixed
