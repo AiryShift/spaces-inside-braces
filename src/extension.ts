@@ -13,71 +13,67 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(spacer);
 }
 
-export function deactivate() {
-}
+export function deactivate() {}
 
-function getPosition(): vscode.Position {
-    return vscode.window.activeTextEditor.selection.active;
-}
 
 class Spacer {
 
-    public shouldSpace(open: string, close: string, line: string): boolean {
-        const position = getPosition();
-
+    public shouldSpace(open: string, close: string, position: vscode.Position): boolean {
+        const line = vscode.window.activeTextEditor.document.lineAt(position.line).text;
         // two characters before cursor
         const textBefore = line.slice(Math.max(position.character - 1, 0), position.character + 1);
         // one chrarcter after cursor
         const textAfter = line.slice(position.character + 1, position.character + 2);
-
         return textBefore === `${open} ` && textAfter === close;
     }
 
-    public space() {
+    public space(open: string, close: string) {
         const editor = vscode.window.activeTextEditor;
-        const position = getPosition();
-
-        // add the space
-        editor.edit(function (edit) {
-            edit.replace(new vscode.Range(position.line, position.character + 1, position.line, position.character + 1), " ");
+        editor.edit(edit => {
+            editor.selections.forEach(selection => {
+                const position = selection.active;
+                // add the space
+                edit.replace(new vscode.Range(position.line, position.character + 1, position.line, position.character + 1), " ");
+            });
         }, {undoStopBefore: false, undoStopAfter: false});
-
-        // move the cursor to the center
-        const newPosition = new vscode.Position(position.line, position.character + 1);
-        const newSelection = new vscode.Selection(newPosition, newPosition);
-        editor.selection = newSelection;
+        // move cursors
+        editor.selections = editor.selections.map(selection => {
+            const position = selection.active;
+            const newPosition = new vscode.Position(position.line, position.character + 1);
+            const newSelection = new vscode.Selection(newPosition, newPosition);
+            return newSelection;
+        });
     }
 
-    public shouldUnspace(open: string, close: string, line: string): boolean {
-        const editor = vscode.window.activeTextEditor;
-        const position = getPosition();
-
+    public shouldUnspace(open: string, close: string, position: vscode.Position): boolean {
+        const line = vscode.window.activeTextEditor.document.lineAt(position.line).text;
         // one character before cursor
         const textBefore = line.slice(Math.max(position.character - 2, 0), Math.max(position.character - 1, 0));
         // two characters after cursor
         const textAfter = line.slice(Math.max(position.character - 1, 0), position.character + 1);
-
         return textBefore === open && textAfter === ` ${close}`;
     }
 
-    public unspace() {
+    public unspace(open: string, close: string) {
         const editor = vscode.window.activeTextEditor;
-        const position = getPosition();
-
         // remove the extra space
-        editor.edit(function (edit) {
-            edit.replace(new vscode.Range(position.line, position.character - 1, position.line, position.character), "");
+        editor.edit(edit => {
+            editor.selections.forEach(selection => {
+                const position = selection.active;
+                edit.replace(new vscode.Range(position.line, position.character - 1, position.line, position.character), "");
+            });
         }, {undoStopBefore: false, undoStopAfter: false});
 
-        // move the cursor to the center
-        const newPosition = new vscode.Position(position.line, position.character - 1);
-        const newSelection = new vscode.Selection(newPosition, newPosition);
-        editor.selection = newSelection
+        // move the cursors
+        editor.selections = editor.selections.map(selection => {
+            const position = selection.active;
+            const newPosition = new vscode.Position(position.line, position.character - 1);
+            const newSelection = new vscode.Selection(newPosition, newPosition);
+            return newSelection;
+        })
     }
 
-    dispose() {
-
-    }
+    dispose() {}
 }
 
 class SpacerController {
@@ -92,7 +88,7 @@ class SpacerController {
         let subscriptions: vscode.Disposable[] = [];
         vscode.workspace.onDidChangeTextDocument(this._onDidChangeTextDocument, this, subscriptions);
         vscode.workspace.onDidChangeConfiguration(this._onDidChangeConfiguration, this, subscriptions);
-        this._config = vscode.workspace.getConfiguration("spaces-inside-braces");
+        this._onDidChangeConfiguration();
 
         this._disposable = vscode.Disposable.from(...subscriptions);
     }
@@ -101,35 +97,33 @@ class SpacerController {
         this._disposable.dispose();
     }
 
-    private _considerSpacingFor(open: string, close: string, line: string) {
-        if (this._spacer.shouldSpace(open, close, line)) {
-            this._spacer.space();
-        } else if (this._spacer.shouldUnspace(open, close, line)) {
-            this._spacer.unspace();
+    private _considerSpacingFor(open: string, close: string) {
+        const editor = vscode.window.activeTextEditor;
+        if (editor.selections.every(selection => { return this._spacer.shouldSpace(open, close, selection.active); })) {
+            this._spacer.space(open, close);
+        } else if (editor.selections.every(selection => { return this._spacer.shouldUnspace(open, close, selection.active); })) {
+            this._spacer.unspace(open, close);
         }
     }
 
     private _onDidChangeTextDocument() {
         if (this._config.get("enable", true)) {
             const editor = vscode.window.activeTextEditor;
-            if (!editor || !editor.selection.isEmpty) {
+            if (!editor) {
                 return;
             }
 
-            const position = editor.selection.active;
-            const line = editor.document.lineAt(position.line).text;
-
             if (this._config.get("enableForBraces", true)) {
-                this._considerSpacingFor("{", "}", line);
+                this._considerSpacingFor("{", "}");
             }
             if (this._config.get("enableForParens", true)) {
-                this._considerSpacingFor("(", ")", line);
+                this._considerSpacingFor("(", ")");
             }
             if (this._config.get("enableForBrackets", true)) {
-                this._considerSpacingFor("[", "]", line);
+                this._considerSpacingFor("[", "]");
             }
             if (this._config.get("enableForAngle", true)) {
-                this._considerSpacingFor("<", ">", line);
+                this._considerSpacingFor("<", ">");
             }
         }
     }
